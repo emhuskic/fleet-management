@@ -1,0 +1,254 @@
+{
+	"info": {
+		"_postman_id": "c7191f8f-45af-4507-9dc8-a78bb98a0781",
+		"name": "fleet-tracking-system-collection",
+		"description": "This is a simple collection of API requests that enable users to create and manage drivers, cars and trips.\n\nIt also contains request to retreive penalties for drivers.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1765137"
+	},
+	"item": [
+		{
+			"name": "Create a car",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 201\", function () {",
+							"    pm.expect(pm.response.to.have.status(201));",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData).to.have.property('id');",
+							"  pm.expect(responseData).to.have.property('licensePlate');",
+							"  pm.expect(responseData).to.have.property('model');",
+							"  pm.expect(responseData).to.have.property('color');",
+							"  pm.expect(responseData).to.have.property('manufacturer');",
+							"  pm.expect(responseData).to.have.property('deleted');",
+							"});",
+							"",
+							"pm.test(\"Model is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.model).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Model should be a non-empty string\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Deleted field is a boolean value\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.deleted).to.be.a('boolean');",
+							"});",
+							"",
+							"// Extracts the id from the response and stores it in an environment variable",
+							"var responseBody = pm.response.json();",
+							"var carId = responseBody.id;",
+							"pm.environment.set(\"carId\", carId);pm.test(\"Response has the id stored in an environment variable\", function () {",
+							"    const responseData = pm.response.json();",
+							"    const storedCarId = pm.environment.get(\"carId\");",
+							"    pm.expect(responseData.id).to.eql(storedCarId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"licensePlate\": \"ABC123\",\n  \"model\": \"A3\",\n  \"color\": \"red\",\n  \"manufacturer\": \"Audi\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cars",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a driver",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extracts the id from the response and stores it in an environment variable",
+							"var responseBody = pm.response.json();",
+							"var driverId = responseBody.id;",
+							"pm.environment.set(\"driverId\", driverId);pm.test(\"Response has the id stored in an environment variable\", function () {",
+							"    const responseData = pm.response.json();",
+							"    const storedDriverId = pm.environment.get(\"driverId\");",
+							"    pm.expect(responseData.id).to.eql(storedDriverId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Doe\",\n    \"driversLicenseNo\": \"D1234567\",\n    \"dateOfBirth\": \"1995-05-02\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/drivers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"drivers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a trip",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extracts the id from the response and stores it in an environment variable",
+							"var responseBody = pm.response.json();",
+							"var tripId = responseBody.id;",
+							"pm.environment.set(\"tripId\", tripId);pm.test(\"Response has the id stored in an environment variable\", function () {",
+							"    const responseData = pm.response.json();",
+							"    const storedTripId = pm.environment.get(\"tripId\");",
+							"    pm.expect(responseData.id).to.eql(storedTripId);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"driverId\": \"{{driverId}}\",\n    \"carId\": \"{{carId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/trips",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"trips"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start a trip",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/trips/start/{{tripId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"trips",
+						"start",
+						"{{tripId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get driver penalty",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/penalty/{{driverId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"penalty",
+						"{{driverId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stop a trip",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"driverId\": {{driverId}}\n    \"carId\": {{carId}}\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/trips/stop/{{tripId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"trips",
+						"stop",
+						"{{tripId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -62,5 +62,7 @@ There is a Swagger API integrated with `fleet-management-service` and `penalty-p
 `http://localhost:8080/q/swagger-ui/#/`- Fleet Management Service Swagger UI
 
 ## Postman Collection
-A happy path testing Postman collection can be found under `/postman-collection` directory.
+A happy path testing Postman collection can be found under root directory.
+File: `fleet-tracking-system-collection.postman_collection.json`
+
 
