@@ -84,7 +84,7 @@ services:
 
   # Kafka broker
   kafka:
-    image: wurstmeister/kafka:2.13-2.7.0
+    image: wurstmeister/kafka
     ports:
       - "9092:9092"
     environment:
@@ -98,7 +98,7 @@ services:
 
   # ZooKeeper for Kafka
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
     networks:
