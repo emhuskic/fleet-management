@@ -65,4 +65,6 @@ There is a Swagger API integrated with `fleet-management-service` and `penalty-p
 A happy path testing Postman collection can be found under root directory.
 File: `fleet-tracking-system-collection.postman_collection.json`
 
-
+## TODOs
+- Custom Exceptions & exception handling
+- 100% test coverage on all servicess
