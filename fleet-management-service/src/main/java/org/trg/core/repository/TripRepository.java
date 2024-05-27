@@ -42,7 +42,7 @@ public class TripRepository implements PanacheRepositoryBase<TripEntity, UUID> {
     @Transactional
     public TripEntity startTrip(DriverEntity driver, CarEntity car) {
         // Find an existing trip for the given driver and car where the start time is null
-        Optional<TripEntity> existingTrip = find("driver = ?1 and car = ?2 and startTime is null", driver, car).firstResultOptional();
+        final Optional<TripEntity> existingTrip = find("driver = ?1 and car = ?2 and startTime is null and endTime is null", driver, car).firstResultOptional();
         
         if (existingTrip.isPresent()) {
             // If an existing trip is found, update its start time and return it
@@ -53,6 +53,10 @@ public class TripRepository implements PanacheRepositoryBase<TripEntity, UUID> {
             return trip;
         } else {
             // If no existing trip is found, create a new trip and set its properties
+            final Optional<TripEntity> existingNotFinishedTrip = find("driver = ?1 and car = ?2 and endTime is not null", driver, car).firstResultOptional();
+            if (existingNotFinishedTrip.isPresent()) {
+                throw new IllegalArgumentException("There is already a trip in progress with the driver and car.");
+            }
             TripEntity newTrip = new TripEntity();
             newTrip.setDriver(driver);
             newTrip.setCar(car);
@@ -93,6 +97,6 @@ public class TripRepository implements PanacheRepositoryBase<TripEntity, UUID> {
     }
 
     public List<TripEntity> findActiveTripsByDriverAndCar(DriverEntity driver, CarEntity car) {
-        return find("driver = ?1 and car = ?2 and endTime is null", driver, car).list();
+        return find("(driver = ?1 OR car = ?2) and endTime is null", driver, car).list();
     }
 }

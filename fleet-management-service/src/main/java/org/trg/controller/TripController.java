@@ -60,8 +60,14 @@ public class TripController {
     @POST
     @Path("/start/{id}")
     public Response startTrip(@PathParam("id") final UUID id) {
-        tripService.startTrip(id);
-        return Response.status(Response.Status.OK).build();
+        try {
+            tripService.startTrip(id);
+            return Response.status(Response.Status.OK).build();
+        } catch (final ServiceException exception) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (final Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Transactional
@@ -88,8 +94,14 @@ public class TripController {
     @POST
     @Path("/stop/{id}")
     public Response stopTrip(@PathParam("id") final UUID id) {
-        tripService.stopTrip(id);
-        return Response.status(Response.Status.OK).build();
+        try {
+            tripService.stopTrip(id);
+            return Response.status(Response.Status.OK).build();
+        } catch (final ServiceException exception) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (final Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Transactional

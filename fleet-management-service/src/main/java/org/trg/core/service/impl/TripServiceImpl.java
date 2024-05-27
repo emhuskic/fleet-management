@@ -15,6 +15,7 @@ import org.trg.core.service.DriverService;
 import org.trg.core.service.MessageProducerService;
 import org.trg.core.service.TripService;
 
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -38,7 +39,7 @@ public class TripServiceImpl implements TripService {
         if (driver == null || driver.isDeleted() || car == null || car.isDeleted()) {
             throw new ServiceException("Trip cannot be created with given driver or car.");
         }
-        
+
         final List<TripEntity> existingTrips = tripRepository.findActiveTripsByDriverAndCar(driver.toEntity(), car.toEntity());
         if (existingTrips.size() > 0) {
             throw new ServiceException("Active trip already exists.");
@@ -80,9 +81,17 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public Trip startTrip(final UUID id) {
-        final Trip trip = Trip.fromEntity(tripRepository.startTrip(id));
-        messageProducerService.produce(trip);
-        return trip;
+        try {
+            final Trip trip = Trip.fromEntity(tripRepository.startTrip(id));
+            messageProducerService.produce(trip);
+            return trip;
+        } catch (final IllegalArgumentException e) {
+            Log.error(e.getMessage());
+            throw new ServiceException(e.getMessage());
+        } catch (final Exception e) {
+            Log.error(e);
+            throw e;
+        }
     }
 
     @Override
@@ -92,25 +101,49 @@ public class TripServiceImpl implements TripService {
         if (driver == null || driver.isDeleted() || car == null || car.isDeleted()) {
             throw new ServiceException("Trip cannot be started with given driver or car.");
         }
-        final Trip trip = Trip.fromEntity(tripRepository.startTrip(driver.toEntity(), car.toEntity()));
-        messageProducerService.produce(trip);
-        return trip;
+        try {
+            final Trip trip = Trip.fromEntity(tripRepository.startTrip(driver.toEntity(), car.toEntity()));
+            messageProducerService.produce(trip);
+            return trip;
+        } catch (final IllegalArgumentException e) {
+            Log.error(e.getMessage());
+            throw new ServiceException(e.getMessage());
+        } catch (final Exception e) {
+            Log.error(e);
+            throw e;
+        }
     }
 
     @Override
     public Trip stopTrip(final UUID id) {
-        final Trip trip = Trip.fromEntity(tripRepository.stopTrip(id));
-        messageProducerService.produce(trip);
-        return trip;
+        try {
+            final Trip trip = Trip.fromEntity(tripRepository.stopTrip(id));
+            messageProducerService.produce(trip);
+            return trip;
+        } catch (final IllegalArgumentException e) {
+            Log.error(e.getMessage());
+            throw new ServiceException(e.getMessage());
+        } catch (final Exception e) {
+            Log.error(e);
+            throw e;
+        }
     }
 
     @Override
     public Trip stopTrip(final UUID driverId, final UUID carId) {
-        final Driver driver = driverService.getDriver(driverId);
-        final Car car = carService.getCar(carId);
-        final Trip trip = Trip.fromEntity(tripRepository.stopTrip(driver.toEntity(), car.toEntity()));
-        messageProducerService.produce(trip);
-        return trip;
+        try {
+            final Driver driver = driverService.getDriver(driverId);
+            final Car car = carService.getCar(carId);
+            final Trip trip = Trip.fromEntity(tripRepository.stopTrip(driver.toEntity(), car.toEntity()));
+            messageProducerService.produce(trip);
+            return trip;
+        } catch (final IllegalArgumentException e) {
+            Log.error(e.getMessage());
+            throw new ServiceException(e.getMessage());
+        } catch (final Exception e) {
+            Log.error(e);
+            throw e;
+        }
     }
 
 }
